@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+        "name": "Django",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": false,
+        "program": "${workspaceRoot}/src/manage.py",
+        "args": [
+            "runserver",
+            "--no-color",
+            "--noreload"
+        ],
+        }
+
+    ]
+}
