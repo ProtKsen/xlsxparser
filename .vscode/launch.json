@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-        "name": "Django",
+        "name": "uploader",
         "type": "python",
         "request": "launch",
         "stopOnEntry": false,
@@ -11,6 +11,20 @@
             "runserver",
             "--no-color",
             "--noreload"
+        ],
+        },
+
+        {
+        "name": "parser",
+        "type": "python",
+        "request": "launch",
+        "stopOnEntry": false,
+        "program": "${workspaceRoot}/parser/manage.py",
+        "args": [
+            "runserver",
+            "--no-color",
+            "--noreload",
+            "127.0.0.1:7000"
         ],
         }
 
