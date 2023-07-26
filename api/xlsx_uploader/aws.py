@@ -1,8 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
-from rest_framework.exceptions import APIException
-
 from config import settings
+from rest_framework.exceptions import APIException
 
 
 class ServiceUnavailable(APIException):

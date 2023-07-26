@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     "rest_framework",
     # local apps
-    "uploader",
+    "xlsx_uploader",
 ]
 
 MIDDLEWARE = [

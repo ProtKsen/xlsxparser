@@ -12,6 +12,12 @@ __pycache__/
 # Minio storage
 .data/
 
+#Rabbit storage
+rabbitmq/
+
+# temp parser's storage
+temp/
+
 # Distribution / packaging
 .Python
 build/
