@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # local apps
     "xlsx_uploader",
+    "billboards",
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,4 @@ RABBITMQ_DEFAULT_PASS = os.environ["RABBITMQ_DEFAULT_PASS"]
 RABBIT_PORT = os.environ["RABBIT_PORT"]
 RABBIT_HOST = os.environ["RABBIT_HOST"]
 PARSING_QUEUE_NAME = os.environ["PARSING_QUEUE_NAME"]
+RESULTS_QUEUE_NAME = os.environ["RESULTS_QUEUE_NAME"]
