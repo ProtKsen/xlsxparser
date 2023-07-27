@@ -1,5 +1,6 @@
+from parser.config import config
+
 import pika
-from config import config
 
 credentials = pika.PlainCredentials(config.rabbit.username, config.rabbit.password)
 
@@ -7,4 +8,9 @@ connection = pika.BlockingConnection(
     pika.ConnectionParameters(config.rabbit.host, config.rabbit.port, "/", credentials=credentials)
 )
 channel = connection.channel()
-channel.queue_declare(queue=config.rabbit.parsing_queue)
+channel.queue_declare(queue=config.rabbit.parsing_queue, durable=True)
+channel.queue_declare(queue=config.rabbit.results_queue)
+
+
+def publish(queue: str, message: str) -> None:
+    channel.basic_publish(exchange="", routing_key=queue, body=message)

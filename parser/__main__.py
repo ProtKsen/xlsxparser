@@ -1,20 +1,12 @@
+import json
 import os
 import pathlib
 import sys
-from parser.aws import s3_client
+from parser.aws import download_file
 from parser.config import config
-from parser.rabbit import channel
+from parser.rabbit import channel, publish
 
 import pandas as pd
-
-
-def download_file(file_name: str, bucket: str):
-    if not os.path.exists(f"{config.temp_file_storage}"):
-        os.makedirs(f"{config.temp_file_storage}")
-
-    s3_client.download_file(
-        Bucket=bucket, Key=file_name, Filename=f"{config.temp_file_storage}/{file_name}"
-    )
 
 
 def delete_file(file_path: str) -> None:
@@ -25,7 +17,7 @@ def do_parcing(file_name: str):
     df = pd.read_excel(file_name, sheet_name="Статус")
     df_dict = df.to_dict("records")
     for row in df_dict:
-        pass
+        publish(config.rabbit.results_queue, json.dumps(row))
 
 
 def callback(ch, method, properties, body):
@@ -36,9 +28,7 @@ def callback(ch, method, properties, body):
 
 
 def main():
-    channel.basic_consume(
-        queue=config.rabbit.parsing_queue, auto_ack=True, on_message_callback=callback
-    )
+    channel.basic_consume(queue=config.rabbit.parsing_queue, on_message_callback=callback)
     channel.start_consuming()
 
 

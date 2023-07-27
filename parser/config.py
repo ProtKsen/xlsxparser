@@ -16,6 +16,7 @@ class RabbitConfig(BaseModel):
     port: str
     host: str
     parsing_queue: str
+    results_queue: str
 
 
 class AppConfig(BaseModel):
@@ -35,6 +36,7 @@ def load_from_env() -> AppConfig:
     rabbit_port = os.environ["RABBIT_PORT"]
     rabbit_host = os.environ["RABBIT_HOST"]
     rabbit_parsing_queue = os.environ["PARSING_QUEUE_NAME"]
+    rabbit_results_queue = os.environ["RESULTS_QUEUE_NAME"]
     return AppConfig(
         temp_file_storage=temp_file_storage,
         aws=AwsConfig(
@@ -49,6 +51,7 @@ def load_from_env() -> AppConfig:
             port=rabbit_port,
             host=rabbit_host,
             parsing_queue=rabbit_parsing_queue,
+            results_queue=rabbit_results_queue,
         ),
     )
 
