@@ -22,6 +22,15 @@
             "console": "internalConsole",
         },
 
+        {
+            "name": "consumer",
+            "type": "python",
+            "request": "launch",
+            "module": "${workspaceRoot}/api/consumer",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "internalConsole",
+        },
+
 
     ]
 }
