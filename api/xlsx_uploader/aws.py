@@ -1,14 +1,6 @@
 import boto3
-from botocore.exceptions import ClientError
 from config import settings
 from rest_framework.exceptions import APIException
-
-
-class ServiceUnavailable(APIException):
-    status_code = 503
-    default_detail = "Faild to save file"
-    default_code = "service_unavailable"
-
 
 session = boto3.session.Session()
 
@@ -20,17 +12,13 @@ s3_client = session.client(
 )
 
 
-class AWSRepo:
-    name = "file"
+def create_bucket(bucket: str) -> None:
+    resp = s3_client.list_buckets()
+    existed_buckets = [bucket["Name"] for bucket in resp["Buckets"]]
+    if bucket not in existed_buckets:
+        s3_client.create_bucket(Bucket=bucket)
 
-    def create_bucket(self, bucket: str) -> None:
-        resp = s3_client.list_buckets()
-        existed_buckets = [bucket["Name"] for bucket in resp["Buckets"]]
-        if bucket not in existed_buckets:
-            s3_client.create_bucket(Bucket=bucket)
 
-    def upload_file_to_bucket(self, file, bucket_input: str, filename: str) -> None:
-        try:
-            s3_client.upload_fileobj(file, bucket_input, filename)
-        except ClientError:
-            raise ServiceUnavailable
+def upload_file(file, bucket: str, file_name: str) -> None:
+    create_bucket(bucket)
+    s3_client.upload_fileobj(file, bucket, file_name)

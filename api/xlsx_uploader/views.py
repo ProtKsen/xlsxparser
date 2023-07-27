@@ -1,18 +1,19 @@
 import os
 
-import pika
+from botocore.exceptions import ClientError, EndpointConnectionError
 from config import settings
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from rest_framework.exceptions import UnsupportedMediaType
-from xlsx_uploader.aws import AWSRepo
+from pika.exceptions import AMQPError
+from xlsx_uploader.aws import upload_file
 from xlsx_uploader.forms import UploadFileForm
+from xlsx_uploader.rabbit import publish
 
 ALLOWED_EXTENSIONS = set([".xlsx", ".xls"])
 
 bucket = settings.AWS_BUCKET_NAME_INPUT
-aws_repo = AWSRepo()
 
 
 @require_http_methods(["GET", "POST"])
@@ -21,30 +22,31 @@ def upload(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES["file"]
+
             file_extension = os.path.splitext(file.name)[-1]
             if file_extension.lower() not in ALLOWED_EXTENSIONS:
-                raise UnsupportedMediaType
+                messages.add_message(request, messages.ERROR, "Неверный формат файла")
+                form = UploadFileForm()
+                context = {"form": form}
+                return render(request, "upload.html", context)
 
-            aws_repo.create_bucket(bucket)
-            aws_repo.upload_file_to_bucket(file, bucket, file.name)
+            try:
+                upload_file(file, bucket, file.name)
+            except (ClientError, EndpointConnectionError):
+                messages.add_message(request, messages.ERROR, "Не удалось сохранить файл")
+                form = UploadFileForm()
+                return render(request, "upload.html", {"form": form})
 
-            credentials = pika.PlainCredentials(
-                settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS
-            )
-            connection = pika.BlockingConnection(
-                pika.ConnectionParameters(
-                    settings.RABBIT_HOST, settings.RABBIT_PORT, "/", credentials=credentials
+            try:
+                publish(settings.PARSING_QUEUE_NAME, file.name)
+            except AMQPError:
+                messages.add_message(
+                    request, messages.ERROR, "Не удалось отправить файл на распознавание"
                 )
-            )
-            channel = connection.channel()
-            channel.queue_declare(queue=settings.PARSING_QUEUE_NAME)
-            channel.basic_publish(
-                exchange="", routing_key=settings.PARSING_QUEUE_NAME, body=f"{file.name}"
-            )
-            connection.close()
+                form = UploadFileForm()
+                return render(request, "upload.html", {"form": form})
 
-            return HttpResponse({"file": file.name}, status=201)
+            return HttpResponse("Файл передан в обработку", status=200)
 
     form = UploadFileForm()
-    context = {"form": form}
-    return render(request, "upload.html", context)
+    return render(request, "upload.html", {"form": form})
