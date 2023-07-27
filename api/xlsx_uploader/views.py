@@ -21,7 +21,6 @@ def upload(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             file = request.FILES["file"]
-
             file_extension = os.path.splitext(file.name)[-1]
             if file_extension.lower() not in ALLOWED_EXTENSIONS:
                 raise UnsupportedMediaType
@@ -29,14 +28,18 @@ def upload(request):
             aws_repo.create_bucket(bucket)
             aws_repo.upload_file_to_bucket(file, bucket, file.name)
 
-            credentials = pika.PlainCredentials("morok", "pass")
+            credentials = pika.PlainCredentials(
+                settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS
+            )
             connection = pika.BlockingConnection(
-                pika.ConnectionParameters("localhost", 5672, "/", credentials=credentials)
+                pika.ConnectionParameters(
+                    settings.RABBIT_HOST, settings.RABBIT_PORT, "/", credentials=credentials
+                )
             )
             channel = connection.channel()
-            channel.queue_declare(queue="files for parsing")
+            channel.queue_declare(queue=settings.PARSING_QUEUE_NAME)
             channel.basic_publish(
-                exchange="", routing_key="files for parsing", body=f"{file.name}"
+                exchange="", routing_key=settings.PARSING_QUEUE_NAME, body=f"{file.name}"
             )
             connection.close()
 
