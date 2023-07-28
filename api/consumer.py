@@ -14,10 +14,12 @@ django.setup()
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
-    url = f'http://127.0.0.1:8000{reverse("add_billboard")}'
+    host = os.environ["APP_HOST"]
+    port = os.environ["APP_PORT"]
+    url = f'http://{host}:{port}{reverse("add_billboard")}'
     headers = {"Content-Type": "application/json"}
-    x = requests.post(url=url, data=json.dumps(data), headers=headers)
-    print(x)
+    resp = requests.post(url=url, data=json.dumps(data), headers=headers)
+    print(resp)
 
 
 def main():
@@ -27,14 +29,20 @@ def main():
 
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            settings.RABBIT_HOST, settings.RABBIT_PORT, "/", credentials=credentials
+            settings.RABBIT_HOST,
+            settings.RABBIT_PORT,
+            "/",
+            credentials=credentials,
         )
     )
 
     channel = connection.channel()
     channel.queue_declare(queue=settings.RESULTS_QUEUE_NAME)
 
-    channel.basic_consume(queue=settings.RESULTS_QUEUE_NAME, on_message_callback=callback)
+    channel.basic_consume(
+        queue=settings.RESULTS_QUEUE_NAME, on_message_callback=callback, auto_ack=True
+    )
+
     print("Started Consuming...")
     channel.start_consuming()
 
