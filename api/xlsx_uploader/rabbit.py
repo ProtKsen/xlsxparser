@@ -4,10 +4,7 @@ from config import settings
 credentials = pika.PlainCredentials(settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS)
 
 
-def publish(
-    queue: str,
-    message: str,
-) -> None:
+def publish(queue: str, message: str) -> None:
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
             settings.RABBIT_HOST, settings.RABBIT_PORT, "/", credentials=credentials
