@@ -11,6 +11,6 @@ def publish(queue: str, message: str) -> None:
         )
     )
     channel = connection.channel()
-    channel.queue_declare(queue=queue, durable=True)
+    channel.queue_declare(queue=queue)
     channel.basic_publish(exchange="", routing_key=queue, body=message)
     connection.close()
