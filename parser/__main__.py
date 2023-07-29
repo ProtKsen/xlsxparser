@@ -15,7 +15,6 @@ def callback(ch, method, properties, body):
     file_path = f"api/media/{file_name}"
     do_parcing(file_path)
     delete_file(file_path)
-    print("Parsing finished!")
 
 
 def main():

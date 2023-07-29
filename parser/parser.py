@@ -52,9 +52,10 @@ def do_parcing(file_name: str) -> None:
     # df_dicts = df.to_dict("records")
     wb = openpyxl.load_workbook(file_name)
     ws = wb.active
+    print("Парсинг начат")
 
     keys = [cell.value for cell in ws[1]]
-
+    count = 0
     for row in ws[2 : ws.max_row]:
         # exclude not valid rows 28596-28605
         if row[0].internal_value:
@@ -119,3 +120,8 @@ def do_parcing(file_name: str) -> None:
             Occupation.objects.create(
                 billboard=billboard, month=month, state=state, comment=comment
             )
+
+        count += 1
+        if count % 1000 == 0:
+            print(f"Обработано {count} строк")
+    print(f"Парсинг завершен. Всего обработано {count} строк")
