@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # local apps
     "xlsx_uploader",
-    "billboards",
+    # "billboards",
 ]
 
 MIDDLEWARE = [

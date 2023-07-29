@@ -6,6 +6,7 @@ class City(models.Model):
 
     class Meta:
         verbose_name_plural = "cities"
+        app_label = "billboards"
 
 
 class MonthYear(models.Model):
@@ -13,6 +14,7 @@ class MonthYear(models.Model):
 
     class Meta:
         verbose_name_plural = "months"
+        app_label = "billboards"
 
 
 class Billboard(models.Model):
@@ -42,6 +44,9 @@ class Billboard(models.Model):
     permitted_until = models.DateField(null=True)
     comment = models.CharField(null=True)
 
+    class Meta:
+        app_label = "billboards"
+
 
 class Occupation(models.Model):
     FREE = "FR"
@@ -67,3 +72,4 @@ class Occupation(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["billboard", "month"], name="uniquej")]
+        app_label = "billboards"

@@ -8,8 +8,7 @@ connection = pika.BlockingConnection(
     pika.ConnectionParameters(config.rabbit.host, config.rabbit.port, "/", credentials=credentials)
 )
 channel = connection.channel()
-channel.queue_declare(queue=config.rabbit.parsing_queue)
-channel.queue_declare(queue=config.rabbit.results_queue)
+channel.queue_declare(queue=config.rabbit.parsing_queue, durable=True)
 
 
 def publish(queue: str, message: str) -> None:

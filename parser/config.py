@@ -2,6 +2,8 @@ import os
 
 from pydantic import BaseModel
 
+from api.config import settings
+
 
 class AwsConfig(BaseModel):
     key_id: str
@@ -25,35 +27,24 @@ class AppConfig(BaseModel):
     rabbit: RabbitConfig
 
 
-def load_from_env() -> AppConfig:
-    temp_file_storage = os.environ["TEMP_FILE_STORAGE"]
-    aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
-    aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    aws_bucket_input = os.environ["AWS_BUCKET_NAME_INPUT"]
-    aws_endpoint = os.environ["AWS_ENDPOINT"]
-    rabbit_username = os.environ["RABBITMQ_DEFAULT_USER"]
-    rabbit_password = os.environ["RABBITMQ_DEFAULT_PASS"]
-    rabbit_port = os.environ["RABBIT_PORT"]
-    rabbit_host = os.environ["RABBIT_HOST"]
-    rabbit_parsing_queue = os.environ["PARSING_QUEUE_NAME"]
-    rabbit_results_queue = os.environ["RESULTS_QUEUE_NAME"]
+def get_from_django_settings():
     return AppConfig(
-        temp_file_storage=temp_file_storage,
+        temp_file_storage="temp",
         aws=AwsConfig(
-            key_id=aws_access_key_id,
-            key=aws_secret_access_key,
-            bucket_input=aws_bucket_input,
-            endpoint=aws_endpoint,
+            key_id=settings.AWS_ACCESS_KEY_ID,
+            key=settings.AWS_SECRET_ACCESS_KEY,
+            bucket_input=settings.AWS_BUCKET_NAME_INPUT,
+            endpoint=settings.AWS_ENDPOINT,
         ),
         rabbit=RabbitConfig(
-            username=rabbit_username,
-            password=rabbit_password,
-            port=rabbit_port,
-            host=rabbit_host,
-            parsing_queue=rabbit_parsing_queue,
-            results_queue=rabbit_results_queue,
+            username=settings.RABBITMQ_DEFAULT_USER,
+            password=settings.RABBITMQ_DEFAULT_PASS,
+            port=settings.RABBIT_PORT,
+            host=settings.RABBIT_HOST,
+            parsing_queue=settings.PARSING_QUEUE_NAME,
+            results_queue=settings.RESULTS_QUEUE_NAME,
         ),
     )
 
 
-config = load_from_env()
+config = get_from_django_settings()

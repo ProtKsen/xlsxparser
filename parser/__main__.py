@@ -17,7 +17,7 @@ def callback(ch, method, properties, body):
     file_path = f"{config.temp_file_storage}/{file_name}"
     do_parcing(file_path)
     delete_file(file_path)
-    channel.close()
+    print("Parsing finished!")
 
 
 def main():

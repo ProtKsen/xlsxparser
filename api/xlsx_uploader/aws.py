@@ -1,6 +1,5 @@
 import boto3
 from config import settings
-from rest_framework.exceptions import APIException
 
 session = boto3.session.Session()
 

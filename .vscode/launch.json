@@ -18,19 +18,8 @@
             "type": "python",
             "request": "launch",
             "module": "parser",
-            "envFile": "${workspaceFolder}/.env",
             "console": "internalConsole",
         },
-
-        {
-            "name": "consumer",
-            "type": "python",
-            "request": "launch",
-            "module": "${workspaceRoot}/api/consumer",
-            "envFile": "${workspaceFolder}/.env",
-            "console": "internalConsole",
-        },
-
 
     ]
 }
