@@ -1,7 +1,6 @@
 import os
 import pathlib
 import sys
-from parser.aws import download_file
 from parser.config import config
 from parser.parser import do_parcing
 from parser.rabbit import channel
@@ -13,8 +12,7 @@ def delete_file(file_path: str) -> None:
 
 def callback(ch, method, properties, body):
     file_name = body.decode("utf-8")
-    download_file(file_name, config.aws.bucket_input)
-    file_path = f"{config.temp_file_storage}/{file_name}"
+    file_path = f"api/media/{file_name}"
     do_parcing(file_path)
     delete_file(file_path)
     print("Parsing finished!")

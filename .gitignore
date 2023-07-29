@@ -9,14 +9,11 @@ __pycache__/
 #VSCode
 #.vscode
 
-# Minio storage
-.data/
+# media storage
+api/media
 
 #Rabbit storage
 rabbitmq/
-
-# temp parser's storage
-temp/
 
 # Distribution / packaging
 .Python

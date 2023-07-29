@@ -50,7 +50,6 @@ def do_parcing(file_name: str) -> None:
     # pandas do it faster but can't read hyperlinks
     # df = pd.read_excel(file_name, sheet_name="Статус")
     # df_dicts = df.to_dict("records")
-
     wb = openpyxl.load_workbook(file_name)
     ws = wb.active
 

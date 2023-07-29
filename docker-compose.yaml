@@ -10,22 +10,6 @@ services:
     networks:
       - app
 
-  minio:
-    restart: always
-    image: minio/minio:RELEASE.2021-10-10T16-53-30Z
-    ports:
-      - '9000:9000'
-      - '6001:6001'
-    command: server /data --console-address ':6001' --address ':9000'
-    networks:
-      - app
-    environment:
-      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
-      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
-      - MINIO_HTTP_TRACE=/dev/stdout
-    volumes:
-      - ./.data/minio:/data
-
   rabbitmq:
     image: rabbitmq:3.10.7-management
     hostname: rabbitmq
