@@ -9,7 +9,6 @@ class RabbitConfig(BaseModel):
     port: str
     host: str
     parsing_queue: str
-    results_queue: str
 
 
 class AppConfig(BaseModel):
@@ -24,7 +23,6 @@ def get_from_django_settings():
             port=settings.RABBIT_PORT,
             host=settings.RABBIT_HOST,
             parsing_queue=settings.PARSING_QUEUE_NAME,
-            results_queue=settings.RESULTS_QUEUE_NAME,
         ),
     )
 
