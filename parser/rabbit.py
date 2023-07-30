@@ -5,7 +5,9 @@ import pika
 credentials = pika.PlainCredentials(config.rabbit.username, config.rabbit.password)
 
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(config.rabbit.host, config.rabbit.port, "/", credentials=credentials)
+    pika.ConnectionParameters(
+        config.rabbit.host, config.rabbit.port, "/", credentials=credentials, heartbeat=3600
+    )
 )
 channel = connection.channel()
 channel.queue_declare(queue=config.rabbit.parsing_queue, durable=True)
