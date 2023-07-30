@@ -5,9 +5,14 @@ from datetime import date, datetime
 import django
 import openpyxl
 
+from api.config import settings
+
 # for using Dajngo models
 sys.path.append("api/")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "api.config.settings")
+
+settings.INSTALLED_APPS.remove("billboards")
+
 django.setup()
 
 from api.billboards.models import Billboard, City, MonthYear, Occupation
@@ -50,6 +55,7 @@ def do_parcing(file_name: str) -> None:
     # pandas do it faster but can't read hyperlinks
     # df = pd.read_excel(file_name, sheet_name="Статус")
     # df_dicts = df.to_dict("records")
+    print("Читаю файл")
     wb = openpyxl.load_workbook(file_name)
     ws = wb.active
     print("Парсинг начат")
