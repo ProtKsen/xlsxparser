@@ -60,7 +60,7 @@ make rabbit.run
 * Запуск api
 
 ```bash
-make pi.run
+make api.run
 ```
 
 * В отдельном терминале запуск парсера
